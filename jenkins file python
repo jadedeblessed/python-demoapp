@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+    
+    tools {
+    maven 'maven3.9.1'
+    //python 'pyton3.11.0'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+               sh "echo 'cloning the latest application version' "
+        git "https://github.com/jadedeblessed/python-demoapp.git"
+        sh "echo 'latest application version available for testing and build' "
+          }
+        }
+         stage('Install Python and Pip') {
+             steps {
+               
+             //  sh 'sudo yum update -y'
+                sh 'sudo yum install -y python3 python3-pip make'
+             }
+         }
+         
+        
+        stage('Install Dependencies') {
+            steps {
+               // sh ' sudo yum install -y python 3.11.0'
+               // sh 'sudo yum install pip'
+               // sh 'python -m pip install -r requirements-dev.txt'
+                sh 'pip3 install -r src/requirements.txt'
+            }
+      }  
+      
+      stage('Run Tests') {
+      steps {
+        sh 'python3 -m unittest discover tests'
+      }
+     }
+    
+     }
+}
